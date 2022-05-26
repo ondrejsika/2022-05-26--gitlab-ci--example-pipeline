@@ -6,6 +6,9 @@ stages:
   - test
   - deploy
 
+variables:
+  IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA-$CI_PIPELINE_ID
+
 editorconfig check:
   stage: check
   image: mstruebing/editorconfig-checker
@@ -22,8 +25,8 @@ build docker:
   stage: build
   script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-    - docker build -t $CI_REGISTRY_IMAGE .
-    - docker push $CI_REGISTRY_IMAGE
+    - docker build -t $IMAGE .
+    - docker push $IMAGE
 
 build bin:
   stage: build
@@ -54,7 +57,7 @@ deploy:
         --repo https://helm.sikalabs.io
         --create-namespace
         --namespace $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG
-        --set image=$CI_REGISTRY_IMAGE
+        --set image=$IMAGE
         --set host=$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
   environment:
     name: $CI_COMMIT_REF_SLUG
