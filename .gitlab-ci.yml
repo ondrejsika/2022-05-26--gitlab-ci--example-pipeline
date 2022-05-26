@@ -12,6 +12,12 @@ editorconfig check:
   script:
     - ec
 
+gofmt:
+  stage: check
+  image: golang:1.17
+  script:
+    - gofmt -d -l .
+
 build docker:
   stage: build
   script:
