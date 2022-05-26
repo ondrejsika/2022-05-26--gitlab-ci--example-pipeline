@@ -5,10 +5,28 @@ stages:
   - test
   - deploy
 
-build:
+build docker:
   stage: build
   script:
     - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
     - docker build -t $CI_REGISTRY_IMAGE .
     - docker push $CI_REGISTRY_IMAGE
 
+build bin:
+  stage: build
+  parallel:
+    matrix:
+      - GOOS:
+          - windows
+          - linux
+          - darwin
+        GOARCH:
+          - amd64
+          - arm64
+  image: golang:1.17
+  script:
+    - export CGO_ENABLED=0
+    - go build -o server-$GOOS-$GOARCH app.go
+  artifacts:
+    paths:
+      - server-*
