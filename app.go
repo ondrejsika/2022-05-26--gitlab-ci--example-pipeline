@@ -8,7 +8,7 @@ import (
 
 func index(w http.ResponseWriter, r *http.Request) {
 	hostname, _ := os.Hostname()
-	fmt.Fprintf(w, "Hello World from Go! %s\n", hostname)
+	fmt.Fprintf(w, "Ahoj svete z Go! %s\n", hostname)
 }
 
 func main() {
