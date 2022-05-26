@@ -43,3 +43,19 @@ build bin:
   artifacts:
     paths:
       - server-*
+
+deploy:
+  stage: deploy
+  needs:
+    - build docker
+  script:
+    - helm upgrade --install
+        main one-image
+        --repo https://helm.sikalabs.io
+        --create-namespace
+        --namespace $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG
+        --set image=$CI_REGISTRY_IMAGE
+        --set host=$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+    url: https://$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
