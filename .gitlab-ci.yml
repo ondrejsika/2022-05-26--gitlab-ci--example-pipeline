@@ -1,9 +1,16 @@
 image: sikalabs/ci
 
 stages:
+  - check
   - build
   - test
   - deploy
+
+editorconfig check:
+  stage: check
+  image: mstruebing/editorconfig-checker
+  script:
+    - ec
 
 build docker:
   stage: build
