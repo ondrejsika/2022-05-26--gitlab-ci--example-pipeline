@@ -59,3 +59,17 @@ deploy:
   environment:
     name: $CI_COMMIT_REF_SLUG
     url: https://$CI_COMMIT_REF_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+    on_stop: stop
+
+stop:
+  stage: deploy
+  when: manual
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - helm uninstall
+        main
+        --namespace $CI_PROJECT_PATH_SLUG-$CI_COMMIT_REF_SLUG
+  environment:
+    name: $CI_COMMIT_REF_SLUG
+    action: stop
